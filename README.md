@@ -68,3 +68,11 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+### Deploying
+1. `gcloud auth login`
+2. `gcloud config set project fifth-boulder-274618`
+3. `npm run build`
+4. `gcloud builds submit --tag gcr.io/fifth-boulder-274618/sleeper-data-visualizer`
+5. `gcloud run deploy sleeper-data-visualizer --image gcr.io/fifth-boulder-274618/sleeper-data-visualizer --platform managed --region us-east1 --allow-unauthenticated`

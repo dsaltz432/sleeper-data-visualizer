@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { Container } from '@mui/material';
+import Navbar from './components/Navbar/Navbar';
+import Standings from './components/Standings/Standings';
+import Matchups from './components/Matchups/Matchups';
+import Methodology from './components/Methodology';
+import NotFound from './components/NotFound';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <>
+            <Navbar />
+            <Container sx={{ marginTop: 4 }}>
+                <Routes>
+                    <Route path="/" element={<Standings />} />
+                    <Route path="/standings" element={<Standings />} />
+                    <Route path="/matchups" element={<Matchups />} />
+                    <Route path="/methodology" element={<Methodology />} />
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </Container>
+        </>
+    );
 }
 
 export default App;

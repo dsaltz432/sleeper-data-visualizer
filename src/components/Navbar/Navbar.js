@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import { AppBar, Toolbar, Button, Box } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
 
@@ -10,10 +10,7 @@ function Navbar() {
     return (
         <AppBar position="static">
             <Toolbar className="navbar-wrapper">
-                <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                    The Last League Super Duper Expert Analysis
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 2 }} className="nav-buttons-container">
+                <Box className="nav-buttons-container">
                     <Button
                         component={Link}
                         to="/standings"
@@ -33,7 +30,7 @@ function Navbar() {
                         to="/methodology"
                         className={`nav-button ${currentPath === '/methodology' ? 'active' : ''}`}
                     >
-                        Methodology
+                        Definitions
                     </Button>
                 </Box>
             </Toolbar>

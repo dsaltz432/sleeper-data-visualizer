@@ -1,27 +1,31 @@
 .standings-wrapper .standings-container {
-    width: 100%;
-    overflow: hidden;
+    overflow-x: auto; /* Allows horizontal scrolling */
     background-color: #1e1e2f;
-    border-radius: 12px;
-    padding: 16px;
+    border-radius: 8px;
+    padding: 12px;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile devices */
 }
 
 .standings-wrapper .standings-header {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     color: #ffffff;
 }
 
 .standings-wrapper .standings-table-head {
     background-color: #333;
+    max-width: 35px;
 }
 
 .standings-wrapper .standings-table-cell {
+    padding: 5px 6px;
+    font-size: 0.8rem;
     color: #ffffff;
     background-color: #2b2b3d;
 }
 
 .standings-wrapper .standings-sort-label {
     color: white;
+    max-width: 40px;
 }
 
 .standings-wrapper .standings-sort-label.Mui-active {

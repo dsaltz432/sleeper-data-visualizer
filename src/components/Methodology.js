@@ -3,13 +3,13 @@ import { Typography, Box } from '@mui/material';
 
 function Methodology() {
     const commonFontStyle = {
-        fontFamily: 'Roboto, sans-serif', // Replace 'Roboto' with your desired font if different
+        fontFamily: 'Roboto, sans-serif',
     };
 
     return (
-        <Box sx={{ padding: 4, lineHeight: 1.6 }}>
-            <Typography variant="h4" sx={{ marginBottom: 3, ...commonFontStyle }}>
-                Methodology: Calculating Overall Rating
+        <Box sx={{ padding: '16px 8px', lineHeight: 1.6 }}> {/* Reduced horizontal padding */}
+            <Typography variant="h5" sx={{ marginBottom: 3, ...commonFontStyle }}>
+                Calculating Overall Rating
             </Typography>
             <Typography variant="body1" sx={{ marginBottom: 2, ...commonFontStyle }}>
                 The <strong>Overall Rating</strong> provides a holistic view of the team's overall strength based on multiple factors. The overall rating is calculated as follows:
@@ -38,8 +38,8 @@ function Methodology() {
                 </ul>
             </Box>
 
-            <Typography variant="h4" sx={{ marginTop: 5, marginBottom: 3, ...commonFontStyle }}>
-                Methodology: Calculating Playoff Probabilities
+            <Typography variant="h5" sx={{ marginTop: 5, marginBottom: 3, ...commonFontStyle }}>
+                Calculating Probabilities
             </Typography>
             <Typography variant="body1" sx={{ marginBottom: 2, ...commonFontStyle }}>
                 We estimate each team's chances of making the playoffs by running 10,000 simulated scenarios of the remaining season. The following steps outline the process used to calculate these probabilities:
@@ -65,7 +65,7 @@ function Methodology() {
 
             <Box sx={{ marginBottom: 3 }}>
                 <Typography variant="h6" sx={{ marginBottom: 1, ...commonFontStyle }}>
-                    3. Simulating Remaining Games
+                    3. Simulating Matchups
                 </Typography>
                 <Typography variant="body1" sx={{ ...commonFontStyle }}>
                     Remaining matchups are simulated using a normal distribution. The simulation uses each team's historical average points scored and standard deviation to model variability. Random points are generated for each team to determine the winner of each matchup.

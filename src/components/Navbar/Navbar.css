@@ -1,24 +1,35 @@
-/* General button styling */
+.navbar-wrapper {
+    padding: 10px;
+}
+
+.nav-buttons-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 16px; /* Equivalent to gap: 2 */
+    flex-wrap: wrap; /* Allows buttons to wrap on smaller screens */
+}
+
 .navbar-wrapper .nav-buttons-container .nav-button {
     background-color: #ffffff;
     color: #1976d2;
-    border-radius: 20px;
+    border-radius: 10px;
     border: 1px solid #1976d2;
-    padding: 6px 16px;
+    padding: 5px;
     font-weight: bold;
     text-transform: uppercase;
     transition: background-color 0.3s, color 0.3s, border 0.3s;
+    max-width: 120px; /* Ensures buttons don't take excessive space */
+    flex-grow: 1; /* Makes the buttons grow to fit available space */
 }
 
-/* Active button styling */
 .navbar-wrapper .nav-buttons-container .nav-button.active {
     background-color: #1976d2;
     color: #ffffff;
     border: 2px solid #ffffff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Optional shadow for extra emphasis */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Hover effect */
 .navbar-wrapper .nav-buttons-container .nav-button:hover {
     background-color: #1976d2;
     color: #ffffff;

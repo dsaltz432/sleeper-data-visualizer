@@ -1,65 +1,86 @@
 .matchups-wrapper .matchup-container {
-    max-width: 600px; /* Adjust as needed */
-    margin: 16px auto; /* Center horizontally and set top/bottom margin */
-    padding: 16px;
+    max-width: 600px;
+    margin: 8px auto;
+    padding: 12px;
     background-color: #1e1e2f;
     color: #ffffff;
     border-radius: 12px;
-}
-
-.matchups-wrapper .week-buttons-container {
     display: flex;
-    justify-content: center;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    margin-bottom: 16px;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
-.matchups-wrapper .week-button {
-    min-width: 60px;
-    margin-left: 4px;
-    margin-right: 4px;
+.matchups-wrapper .matchup-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
-.matchups-wrapper .current-week-outline {
-    border: 2px solid blue; /* Blue outline for current week */
-    color: blue; /* Optional: Change text color to match */
-}
-
-.matchups-wrapper .team-info {
+.matchups-wrapper .team-side {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 8px;
-    border-radius: 8px;
+    width: 45%; /* Adjust to balance space */
 }
 
-.matchups-wrapper .team-info-border {
-    border: 1px solid #444;
-}
-
-.matchups-wrapper .avatar-stack {
+.matchups-wrapper .vs-box {
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 10%; /* Space for the "VS" text */
+}
+
+.matchups-wrapper .vs-text {
+    font-size: 1.5rem;
+    color: #ffffff;
 }
 
 .matchups-wrapper .team-name {
     font-weight: bold;
+    font-size: 1rem;
 }
 
 .matchups-wrapper .total-points {
-    margin-top: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 4px;
+    color: #ffffff; /* Set points text to white */
 }
 
-.matchups-wrapper .win-probability {
+.matchups-wrapper .win-probability-bar {
     width: 100%;
-    height: 8px;
-    border-radius: 5px;
-    background-color: #333;
+    height: 6px;
+    border-radius: 3px;
 }
 
-.matchups-wrapper .vs-text {
-    text-align: center;
-    font-size: 2rem;
-    color: #ffffff;
+/* Adjust color of the WIN probability text if needed */
+.matchups-wrapper .win-probability-text {
+    font-size: 0.8rem;
+    color: #ffffff; /* Set the WIN probability text to white */
+}
+
+.matchups-wrapper .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.matchups-wrapper .week-navigation-container {
+    display: flex;
+    align-items: center;
+}
+
+.matchups-wrapper .week-navigation-arrow {
+    color: #1976d2; /* Arrow color */
+    padding: 0;
+}
+
+.matchups-wrapper .current-week-text {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #1976d2;
+    padding: 2px;
+    margin: 0 4px; /* Spacing between text and arrows */
 }

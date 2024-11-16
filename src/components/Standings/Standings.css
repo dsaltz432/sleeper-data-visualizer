@@ -47,3 +47,11 @@
 .standings-wrapper .standings-table-row {
     background-color: #2b2b3d;
 }
+
+.standings-streak {
+    color: #00ff00; /* Green color for win streaks */
+}
+
+.standings-streak.losing {
+    color: #ff0000; /* Red color for losing streaks */
+}

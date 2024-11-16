@@ -12,7 +12,9 @@ import {
     Modal,
     Backdrop,
     Fade,
+    Button,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles'; // Import useTheme
 import { fetchReport } from '../../api/api';
 import Spinner from '../Spinner/Spinner';
 import './Standings.css';
@@ -20,11 +22,14 @@ import './Standings.css';
 function Standings() {
     const [teams, setTeams] = useState([]);
     const [orderDirection, setOrderDirection] = useState('desc');
-    const [valueToOrderBy, setValueToOrderBy] = useState('shortName'); // Default to 'Record'
+    const [valueToOrderBy, setValueToOrderBy] = useState('shortName');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [selectedTeam, setSelectedTeam] = useState(null); // To store the team data for modal
-    const [open, setOpen] = useState(false); // To control the modal state
+    const [selectedTeam, setSelectedTeam] = useState(null);
+    const [open, setOpen] = useState(false);
+    const [isPlayoffsView, setIsPlayoffsView] = useState(false);
+
+    const theme = useTheme(); // Initialize the theme
 
     const effectRan = useRef(false);
 
@@ -64,14 +69,6 @@ function Standings() {
         setSelectedTeam(null);
     };
 
-    if (loading) {
-        return <Spinner />;
-    }
-
-    if (error) {
-        return <Typography>Error: {error}</Typography>;
-    }
-
     const handleSortRequest = (property) => {
         const isAsc = valueToOrderBy === property && orderDirection === 'asc';
         setOrderDirection(isAsc ? 'desc' : 'asc');
@@ -81,11 +78,9 @@ function Standings() {
     const sortedTeams = (teamsArray) => {
         return teamsArray.sort((a, b) => {
             if (valueToOrderBy === 'shortName') {
-                // Sort by record: primary sort by wins, secondary sort by losses
                 const aRecord = a.wins - a.losses;
                 const bRecord = b.wins - b.losses;
                 if (aRecord === bRecord) {
-                    // If records are the same, sort by pointsFor as a secondary criterion
                     return orderDirection === 'asc' ? a.pointsFor - b.pointsFor : b.pointsFor - a.pointsFor;
                 }
                 return orderDirection === 'asc' ? aRecord - bRecord : bRecord - aRecord;
@@ -101,23 +96,47 @@ function Standings() {
         });
     };
 
+    if (loading) {
+        return <Spinner />;
+    }
+
+    if (error) {
+        return <Typography>Error: {error}</Typography>;
+    }
+
+    // Define table columns based on the view
+    const standingsColumns = [
+        { id: 'shortName', label: 'Record' },
+        { id: 'pointsFor', label: 'PF' },
+        { id: 'pointsAgainst', label: 'PA' },
+        { id: 'overallRating', label: 'Rating' },
+        { id: 'madePlayoffProbability', label: 'Playoffs' },
+    ];
+
+    const playoffsColumns = [
+        { id: 'shortName', label: 'Record' },
+        { id: 'overallRating', label: 'Rating' },
+        { id: 'madePlayoffProbability', label: 'Playoffs' },
+        { id: 'championshipProbability', label: 'Champ' },
+        { id: 'loserBowlProbability', label: 'Pickles' },
+    ];
+
+    const columns = isPlayoffsView ? playoffsColumns : standingsColumns;
+
     return (
         <div className="standings-wrapper">
             <Paper className="standings-container">
-                <Box className="standings-header">
-                    <Typography variant="h5">Standings</Typography>
+                <Box className="standings-header" display="flex" justifyContent="space-between" alignItems="center">
+                    <Typography variant="h5">{isPlayoffsView ? 'Playoff Odds' : 'Standings'}</Typography>
+                    <Button variant="contained" onClick={() => setIsPlayoffsView(!isPlayoffsView)}>
+                        {isPlayoffsView ? 'Standings' : 'Playoffs'}
+                    </Button>
                 </Box>
                 <div className="standings-table">
                     <Table>
                         <TableHead>
                             <TableRow className="standings-table-head">
-                                {[
-                                    { id: 'shortName', label: 'Record' },
-                                    { id: 'pointsFor', label: 'PF' },
-                                    { id: 'pointsAgainst', label: 'PA' },
-                                    { id: 'overallRating', label: 'Rating' },
-                                    { id: 'madePlayoffProbability', label: 'Playoffs' },
-                                ].map((headCell) => (
+                                {columns.map((headCell) => (
                                     <TableCell key={headCell.id} className="standings-table-cell">
                                         <TableSortLabel
                                             active={valueToOrderBy === headCell.id}
@@ -134,39 +153,88 @@ function Standings() {
                         <TableBody>
                             {sortedTeams(teams).map((team) => (
                                 <TableRow hover key={team.rosterId} className="standings-table-row">
-                                    <TableCell className="standings-table-cell">
-                                        <div>
-                                            <strong>{team.shortName}</strong>
-                                        </div>
-                                        <div>
-                                            {team.wins}-{team.losses} {/* Display combined record */}
-                                            {team.streak && (
-                                                <span
-                                                    style={{
-                                                        color: team.streak.includes('W') ? 'green' : '#b22222', // Green for win streaks, red for losing streaks
-                                                    }}
-                                                >
-                                                    {' '}({team.streak})
-                                                </span>
-                                            )}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="standings-table-cell">{team.pointsFor}</TableCell>
-                                    <TableCell className="standings-table-cell">{team.pointsAgainst}</TableCell>
-                                    <TableCell className="standings-table-cell">
-                                        {team.overallRating !== undefined
-                                            ? `${(team.overallRating * 100).toFixed(1)}`
-                                            : 'N/A'}
-                                    </TableCell>
-                                    <TableCell
-                                        className="standings-table-cell"
-                                        onClick={() => handleOpen(team)}
-                                        style={{ cursor: 'pointer', color: '#1976d2', textDecoration: 'underline' }}
-                                    >
-                                        {team.madePlayoffProbability !== undefined
-                                            ? `${(team.madePlayoffProbability * 100).toFixed(1)}%`
-                                            : 'N/A'}
-                                    </TableCell>
+                                    {columns.map((col) => {
+                                        switch (col.id) {
+                                            case 'shortName':
+                                                return (
+                                                    <TableCell className="standings-table-cell" key={col.id}>
+                                                        <div className="standings-team-name">
+                                                            {team.shortName}
+                                                        </div>
+                                                        <div>
+                                                            {team.wins}-{team.losses}
+                                                            {team.streak && (
+                                                                <span
+                                                                    className="standings-streak"
+                                                                    style={{
+                                                                        color: team.streak.includes('W')
+                                                                            ? theme.palette.success.main
+                                                                            : theme.palette.error.main,
+                                                                    }}
+                                                                >
+                                                                    {' '}({team.streak})
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </TableCell>
+                                                );
+                                            case 'pointsFor':
+                                                return (
+                                                    <TableCell className="standings-table-cell" key={col.id}>
+                                                        {team.pointsFor}
+                                                    </TableCell>
+                                                );
+                                            case 'pointsAgainst':
+                                                return (
+                                                    <TableCell className="standings-table-cell" key={col.id}>
+                                                        {team.pointsAgainst}
+                                                    </TableCell>
+                                                );
+                                            case 'overallRating':
+                                                return (
+                                                    <TableCell className="standings-table-cell" key={col.id}>
+                                                        {team.overallRating !== undefined
+                                                            ? `${(team.overallRating * 100).toFixed(1)}`
+                                                            : 'N/A'}
+                                                    </TableCell>
+                                                );
+                                            case 'madePlayoffProbability':
+                                                return (
+                                                    <TableCell
+                                                        className="standings-table-cell"
+                                                        onClick={() => handleOpen(team)}
+                                                        key={col.id}
+                                                        style={{
+                                                            cursor: 'pointer',
+                                                            color: '#1976d2',
+                                                            textDecoration: 'underline',
+                                                        }}
+                                                    >
+                                                        {team.madePlayoffProbability !== undefined
+                                                            ? `${(team.madePlayoffProbability * 100).toFixed(1)}%`
+                                                            : 'N/A'}
+                                                    </TableCell>
+                                                );
+                                            case 'championshipProbability':
+                                                return (
+                                                    <TableCell className="standings-table-cell" key={col.id}>
+                                                        {team.championshipProbability !== undefined
+                                                            ? `${(team.championshipProbability * 100).toFixed(1)}%`
+                                                            : 'N/A'}
+                                                    </TableCell>
+                                                );
+                                            case 'loserBowlProbability':
+                                                return (
+                                                    <TableCell className="standings-table-cell" key={col.id}>
+                                                        {team.loserBowlProbability !== undefined
+                                                            ? `${(team.loserBowlProbability * 100).toFixed(1)}%`
+                                                            : 'N/A'}
+                                                    </TableCell>
+                                                );
+                                            default:
+                                                return null;
+                                        }
+                                    })}
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -191,10 +259,10 @@ function Standings() {
                             top: '50%',
                             left: '50%',
                             transform: 'translate(-50%, -50%)',
-                            width: 200,
+                            width: 220,
                             bgcolor: 'background.paper',
                             border: '2px solid #000',
-                            'border-radius': '10px',
+                            borderRadius: '10px',
                             boxShadow: 24,
                             p: 4,
                         }}
@@ -205,10 +273,12 @@ function Standings() {
                                     {selectedTeam.shortName} Playoff Breakdown
                                 </Typography>
                                 <Typography sx={{ mt: 2, fontSize: '0.9rem' }}>
-                                    From Record: {(selectedTeam.madePlayoffFromRecordProbability * 100).toFixed(1)}%
+                                    From Record:{' '}
+                                    {(selectedTeam.madePlayoffFromRecordProbability * 100).toFixed(1)}%
                                 </Typography>
                                 <Typography sx={{ fontSize: '0.9rem' }}>
-                                    From Jordan Rule: {(selectedTeam.madePlayoffFromJordanRuleProbability * 100).toFixed(1)}%
+                                    From Jordan Rule:{' '}
+                                    {(selectedTeam.madePlayoffFromJordanRuleProbability * 100).toFixed(1)}%
                                 </Typography>
                             </div>
                         )}

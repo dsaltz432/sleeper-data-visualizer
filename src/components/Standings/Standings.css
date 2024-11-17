@@ -1,9 +1,9 @@
 .standings-wrapper .standings-container {
-    overflow-x: auto; /* Allows horizontal scrolling */
+    overflow-x: auto;
     background-color: #1e1e2f;
     border-radius: 8px;
     padding: 12px;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile devices */
+    -webkit-overflow-scrolling: touch;
 }
 
 .standings-wrapper .standings-header {
@@ -55,3 +55,17 @@
 .standings-streak.losing {
     color: #ff0000; /* Red color for losing streaks */
 }
+
+.standings-modal-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 220px;
+    background-color: #fff;
+    border: 2px solid #000;
+    border-radius: 10px;
+    box-shadow: 0px 0px 24px rgba(0, 0, 0, 0.12);
+    padding: 32px;
+}
+

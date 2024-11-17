@@ -7,7 +7,7 @@ function Methodology() {
     };
 
     return (
-        <Box sx={{ padding: '16px 8px', lineHeight: 1.6 }}> {/* Reduced horizontal padding */}
+        <Box sx={{ padding: '16px 8px', lineHeight: 1.6 }}> {}
             <Typography variant="h5" sx={{ marginBottom: 3, ...commonFontStyle }}>
                 Calculating Overall Rating
             </Typography>

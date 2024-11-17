@@ -21,7 +21,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "npm run build && gcloud builds submit --tag gcr.io/fifth-boulder-274618/sleeper-data-visualizer && gcloud run deploy sleeper-data-visualizer --image gcr.io/fifth-boulder-274618/sleeper-data-visualizer --platform managed --region us-east1 --allow-unauthenticated"
   },
   "eslintConfig": {
     "extends": [

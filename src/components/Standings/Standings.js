@@ -1,22 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    TableSortLabel,
-    Paper,
-    Typography,
-    Box,
-    Modal,
-    Backdrop,
-    Fade,
-    Button,
-} from '@mui/material';
-import { useTheme } from '@mui/material/styles'; // Import useTheme
+import { Paper, Typography, Box, Button } from '@mui/material';
 import { fetchReport } from '../../api/api';
 import Spinner from '../Spinner/Spinner';
+import StandingsTable from './StandingsTable';
+import StandingsModal from './StandingsModal';
 import './Standings.css';
 
 function Standings() {
@@ -28,8 +15,6 @@ function Standings() {
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [open, setOpen] = useState(false);
     const [isPlayoffsView, setIsPlayoffsView] = useState(false);
-
-    const theme = useTheme(); // Initialize the theme
 
     const effectRan = useRef(false);
 
@@ -106,19 +91,19 @@ function Standings() {
 
     // Define table columns based on the view
     const standingsColumns = [
-        { id: 'shortName', label: 'Record' },
-        { id: 'pointsFor', label: 'PF' },
-        { id: 'pointsAgainst', label: 'PA' },
-        { id: 'overallRating', label: 'Rating' },
-        { id: 'madePlayoffProbability', label: 'Playoffs' },
+        { id: 'shortName', label: 'Record', explanation: 'Team name and win-loss record' },
+        { id: 'pointsFor', label: 'PF', explanation: 'Total points scored by the team' },
+        { id: 'pointsAgainst', label: 'PA', explanation: 'Total points scored against the team' },
+        { id: 'overallRating', label: 'Rating', explanation: 'Overall team rating based on performance' },
+        { id: 'madePlayoffProbability', label: 'Playoffs', explanation: 'Probability of making the playoffs' },
     ];
 
     const playoffsColumns = [
-        { id: 'shortName', label: 'Record' },
-        { id: 'overallRating', label: 'Rating' },
-        { id: 'madePlayoffProbability', label: 'Playoffs' },
-        { id: 'championshipProbability', label: 'Champ' },
-        { id: 'loserBowlProbability', label: 'Pickles' },
+        { id: 'shortName', label: 'Record', explanation: 'Team name and win-loss record' },
+        { id: 'overallRating', label: 'Rating', explanation: 'Overall team rating based on performance' },
+        { id: 'madePlayoffProbability', label: 'Playoffs', explanation: 'Probability of making the playoffs' },
+        { id: 'championshipProbability', label: 'Champ', explanation: 'Probability of winning the championship' },
+        { id: 'loserBowlProbability', label: 'Pickles', explanation: 'Probability of finishing last' },
     ];
 
     const columns = isPlayoffsView ? playoffsColumns : standingsColumns;
@@ -133,158 +118,23 @@ function Standings() {
                     </Button>
                 </Box>
                 <div className="standings-table">
-                    <Table>
-                        <TableHead>
-                            <TableRow className="standings-table-head">
-                                {columns.map((headCell) => (
-                                    <TableCell key={headCell.id} className="standings-table-cell">
-                                        <TableSortLabel
-                                            active={valueToOrderBy === headCell.id}
-                                            direction={valueToOrderBy === headCell.id ? orderDirection : 'asc'}
-                                            onClick={() => handleSortRequest(headCell.id)}
-                                            className="standings-sort-label"
-                                        >
-                                            {headCell.label}
-                                        </TableSortLabel>
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {sortedTeams(teams).map((team) => (
-                                <TableRow hover key={team.rosterId} className="standings-table-row">
-                                    {columns.map((col) => {
-                                        switch (col.id) {
-                                            case 'shortName':
-                                                return (
-                                                    <TableCell className="standings-table-cell" key={col.id}>
-                                                        <div className="standings-team-name">
-                                                            {team.shortName}
-                                                        </div>
-                                                        <div>
-                                                            {team.wins}-{team.losses}
-                                                            {team.streak && (
-                                                                <span
-                                                                    className="standings-streak"
-                                                                    style={{
-                                                                        color: team.streak.includes('W')
-                                                                            ? theme.palette.success.main
-                                                                            : theme.palette.error.main,
-                                                                    }}
-                                                                >
-                                                                    {' '}({team.streak})
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    </TableCell>
-                                                );
-                                            case 'pointsFor':
-                                                return (
-                                                    <TableCell className="standings-table-cell" key={col.id}>
-                                                        {team.pointsFor}
-                                                    </TableCell>
-                                                );
-                                            case 'pointsAgainst':
-                                                return (
-                                                    <TableCell className="standings-table-cell" key={col.id}>
-                                                        {team.pointsAgainst}
-                                                    </TableCell>
-                                                );
-                                            case 'overallRating':
-                                                return (
-                                                    <TableCell className="standings-table-cell" key={col.id}>
-                                                        {team.overallRating !== undefined
-                                                            ? `${(team.overallRating * 100).toFixed(1)}`
-                                                            : 'N/A'}
-                                                    </TableCell>
-                                                );
-                                            case 'madePlayoffProbability':
-                                                return (
-                                                    <TableCell
-                                                        className="standings-table-cell"
-                                                        onClick={() => handleOpen(team)}
-                                                        key={col.id}
-                                                        style={{
-                                                            cursor: 'pointer',
-                                                            color: '#1976d2',
-                                                            textDecoration: 'underline',
-                                                        }}
-                                                    >
-                                                        {team.madePlayoffProbability !== undefined
-                                                            ? `${(team.madePlayoffProbability * 100).toFixed(1)}%`
-                                                            : 'N/A'}
-                                                    </TableCell>
-                                                );
-                                            case 'championshipProbability':
-                                                return (
-                                                    <TableCell className="standings-table-cell" key={col.id}>
-                                                        {team.championshipProbability !== undefined
-                                                            ? `${(team.championshipProbability * 100).toFixed(1)}%`
-                                                            : 'N/A'}
-                                                    </TableCell>
-                                                );
-                                            case 'loserBowlProbability':
-                                                return (
-                                                    <TableCell className="standings-table-cell" key={col.id}>
-                                                        {team.loserBowlProbability !== undefined
-                                                            ? `${(team.loserBowlProbability * 100).toFixed(1)}%`
-                                                            : 'N/A'}
-                                                    </TableCell>
-                                                );
-                                            default:
-                                                return null;
-                                        }
-                                    })}
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                    <StandingsTable
+                        teams={teams}
+                        columns={columns}
+                        valueToOrderBy={valueToOrderBy}
+                        orderDirection={orderDirection}
+                        handleSortRequest={handleSortRequest}
+                        sortedTeams={sortedTeams}
+                        handleOpen={handleOpen}
+                    />
                 </div>
             </Paper>
 
-            {/* Modal for Playoff Breakdown */}
-            <Modal
+            <StandingsModal
                 open={open}
-                onClose={handleClose}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
-            >
-                <Fade in={open}>
-                    <Box
-                        sx={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            width: 220,
-                            bgcolor: 'background.paper',
-                            border: '2px solid #000',
-                            borderRadius: '10px',
-                            boxShadow: 24,
-                            p: 4,
-                        }}
-                    >
-                        {selectedTeam && (
-                            <div>
-                                <Typography variant="h6" component="h2" sx={{ fontSize: '1rem' }}>
-                                    {selectedTeam.shortName} Playoff Breakdown
-                                </Typography>
-                                <Typography sx={{ mt: 2, fontSize: '0.9rem' }}>
-                                    From Record:{' '}
-                                    {(selectedTeam.madePlayoffFromRecordProbability * 100).toFixed(1)}%
-                                </Typography>
-                                <Typography sx={{ fontSize: '0.9rem' }}>
-                                    From Jordan Rule:{' '}
-                                    {(selectedTeam.madePlayoffFromJordanRuleProbability * 100).toFixed(1)}%
-                                </Typography>
-                            </div>
-                        )}
-                    </Box>
-                </Fade>
-            </Modal>
+                handleClose={handleClose}
+                selectedTeam={selectedTeam}
+            />
         </div>
     );
 }
